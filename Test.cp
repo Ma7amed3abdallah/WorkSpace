@@ -1,6 +1,6 @@
-#line 1 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/KeyPadLCDTest/Test.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rtc_source.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rtc.h"
+#line 1 "C:/GitWorkSpace/RFID/Test.c"
+#line 1 "c:/gitworkspace/rfid/rtc_source.c"
+#line 1 "c:/gitworkspace/rfid/rtc.h"
 
 
 sbit LCD_RS at RB4_bit;
@@ -58,8 +58,8 @@ char checkPassword();
 void correctPassword();
 void wrongPassword();
 char readKeypad();
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rfidsource.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rfidheader.h"
+#line 1 "c:/gitworkspace/rfid/rfidsource.c"
+#line 1 "c:/gitworkspace/rfid/rfidheader.h"
 void Init();
 void GrapIDs();
 char addCard();
@@ -68,7 +68,7 @@ void CheckCard();
 void registeredCardAction();
 void notRegisteredCardAction();
 unsigned char buffer,cardExists=0,Row=0,j,Exist,Exist1,Exist2,uart_rd[20],id[16][14]={"","","","","","","","","","","","","","","",""};
-#line 4 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rfidsource.c"
+#line 4 "c:/gitworkspace/rfid/rfidsource.c"
 void GrapIDs(){
 for(j=0;j<16;j++){
 for(i=0;i<10;i++){
@@ -172,7 +172,7 @@ void notRegisteredCardAction(){
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Pass Your ID");
 }
-#line 4 "c:/users/mohamed/onedrive/documents/workspace/keypadlcdtest/rtc_source.c"
+#line 4 "c:/gitworkspace/rfid/rtc_source.c"
  void Initialization()
  {
  GrapIDs();
@@ -394,7 +394,7 @@ unsigned char Mask(char kp)
  }
 
  }
-#line 2 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/KeyPadLCDTest/Test.c"
+#line 2 "C:/GitWorkSpace/RFID/Test.c"
 int seee;
 
 void main() {
@@ -404,6 +404,6 @@ Initialization();
 I2C1_Init(100000);
 for(;;){
 CheckCard();
-checkPassword();
+
 }
 }
