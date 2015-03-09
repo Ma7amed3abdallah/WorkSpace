@@ -1792,6 +1792,8 @@ _main:
 L_main88:
 ;Test.c,10 :: 		CheckCard();
 	CALL        _CheckCard+0, 0
+;Test.c,11 :: 		checkPassword();
+	CALL        _checkPassword+0, 0
 ;Test.c,12 :: 		}
 	GOTO        L_main88
 ;Test.c,13 :: 		}
