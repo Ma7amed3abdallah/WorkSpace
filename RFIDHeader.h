@@ -1,7 +1,8 @@
+sbit RFIDEnable at RC0_bit;
 void Init();
 void GrapIDs();
 char addCard();
-//void removeCard();
+char removeCard();
 void CheckCard();
 void registeredCardAction();
 void notRegisteredCardAction();

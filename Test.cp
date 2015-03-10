@@ -1,6 +1,6 @@
-#line 1 "C:/GitWorkSpace/RFID/Test.c"
-#line 1 "c:/gitworkspace/rfid/rtc_source.c"
-#line 1 "c:/gitworkspace/rfid/rtc.h"
+#line 1 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc_source.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc.h"
 
 
 sbit LCD_RS at RB4_bit;
@@ -58,17 +58,18 @@ char checkPassword();
 void correctPassword();
 void wrongPassword();
 char readKeypad();
-#line 1 "c:/gitworkspace/rfid/rfidsource.c"
-#line 1 "c:/gitworkspace/rfid/rfidheader.h"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidsource.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidheader.h"
+sbit RFIDEnable at RC0_bit;
 void Init();
 void GrapIDs();
 char addCard();
-
+char removeCard();
 void CheckCard();
 void registeredCardAction();
 void notRegisteredCardAction();
 unsigned char buffer,cardExists=0,Row=0,j,Exist,Exist1,Exist2,uart_rd[20],id[16][14]={"","","","","","","","","","","","","","","",""};
-#line 4 "c:/gitworkspace/rfid/rfidsource.c"
+#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidsource.c"
 void GrapIDs(){
 for(j=0;j<16;j++){
 for(i=0;i<10;i++){
@@ -80,18 +81,24 @@ delay_ms(10);
 
 
 
-void addCard(){
+char addCard(){
 cardExists=0;
+RFIDEnable=1;
 for(;;){
 if (UART1_Data_Ready() == 1&&cardExists==0){
-UART1_Read_Text(uart_rd,"\r", 16);
+for(i=0;i<12;i++){
+for(;!UART1_Data_Ready(););
+uart_rd[i]=UART1_Read();
+}
+RFIDEnable=0;
+if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
 for(i=0;i<16;i++){
 Exist1=strstr(uart_rd,id[i]);
-if(Exist1!=0)
-{
+if(Exist1!=0){
+Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,2,"Already Exists");
 cardExists=1;
-break;
+return 0;
 }
 }
 if(cardExists==0){
@@ -107,23 +114,34 @@ EEPROM_Write(Row+(i-1),uart_rd[i]);
 id[Row/16][i-1]=uart_rd[i];
 }
 Exist1=strstr(uart_rd,id[Row/16]);
-if(Exist1!=0)
- {
- Lcd_Cmd(_LCD_CLEAR);
- Lcd_Out(1,3,"Card Added");
- cardExists=1;
- }
+if(Exist1!=0){
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,3,"Card Added");
+cardExists=1;
+return 0;
+}
+}
+}
+else{
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,5,"Failed");
+return 0;
+}
 }
 }
 }
 
-}
-
-void removeCard(){
+char removeCard(){
 cardExists=0;
+RFIDEnable=1;
 for(;;){
 if (UART1_Data_Ready() == 1&&cardExists==0){
-UART1_Read_Text(uart_rd,"\r", 16);
+for(i=0;i<12;i++){
+for(;!UART1_Data_Ready(););
+uart_rd[i]=UART1_Read();
+}
+RFIDEnable=0;
+if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
 for(i=0;i<16;i++){
 Exist1=strstr(uart_rd,id[i]);
 if(Exist1!=0)
@@ -133,18 +151,30 @@ id[i][j]=0x9F;
 EEPROM_Write((i*16)+j,0x9F);
 }
 cardExists=1;
+Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,3,"Card Removed");
-break;
+return 0;
+}
+}
+}
+else{
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,5,"Failed");
+return 0;
 }
 }
 }
 }
-}
-
 char CheckCard(){
+ RFIDEnable=1;
  if (UART1_Data_Ready() == 1)
  {
- UART1_Read_Text(uart_rd,"\r", 16);
+ for(i=0;i<12;i++){
+ for(;!UART1_Data_Ready(););
+ uart_rd[i]=UART1_Read();
+ }
+ RFIDEnable=0;
+ if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
  for(i=0;i<16;i++){
  Exist=strstr(uart_rd,id[i]);
  if(Exist!=0){
@@ -155,7 +185,7 @@ char CheckCard(){
  notRegisteredCardAction();
  return 0;
  }
-
+ }
 }
 void registeredCardAction(){
  Lcd_Cmd(_LCD_CLEAR);
@@ -172,9 +202,11 @@ void notRegisteredCardAction(){
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Pass Your ID");
 }
-#line 4 "c:/gitworkspace/rfid/rtc_source.c"
+#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc_source.c"
  void Initialization()
  {
+ TRISC0_bit=0;
+ RFIDEnable=1;
  GrapIDs();
  Keypad_Init();
  Lcd_Init();
@@ -184,8 +216,9 @@ void notRegisteredCardAction(){
  UART1_Init(2400);
  Delay_ms(100);
  }
- char checkPassword()
- {
+
+
+char checkPassword(){
  for(;;){
  kp = 0;
  kp = Keypad_Key_Click();
@@ -215,9 +248,10 @@ void notRegisteredCardAction(){
  }
  }
  }
- }
+}
 
  void correctPassword(){
+ cnt=0;
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Correct Password");
  delay_ms(1000);
@@ -394,12 +428,10 @@ unsigned char Mask(char kp)
  }
 
  }
-#line 2 "C:/GitWorkSpace/RFID/Test.c"
+#line 2 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
 int seee;
 
 void main() {
-int *t;
-
 Initialization();
 I2C1_Init(100000);
 for(;;){

@@ -26,9 +26,7 @@ main
 	I2C1_Init
 	CheckCard
 		UART1_Data_Ready
-		UART1_Read_Text
-			UART1_Data_Ready
-			UART1_Read
+		UART1_Read
 		Mul_16x16_U
 		strstr
 			strlen
@@ -116,14 +114,16 @@ main
 							Delay_50us
 				addCard
 					UART1_Data_Ready
-					UART1_Read_Text
-						UART1_Data_Ready
-						UART1_Read
+					UART1_Read
 					Mul_16x16_U
 					strstr
 						strlen
 						strncmp
 						strchr
+					Lcd_Cmd
+						Delay_1us
+						Delay_5500us
+						Delay_50us
 					Lcd_Out
 						Lcd_Cmd
 							Delay_1us
@@ -136,21 +136,19 @@ main
 								Delay_50us
 					EEPROM_Read
 					EEPROM_Write
-					Lcd_Cmd
-						Delay_1us
-						Delay_5500us
-						Delay_50us
 				removeCard
 					UART1_Data_Ready
-					UART1_Read_Text
-						UART1_Data_Ready
-						UART1_Read
+					UART1_Read
 					Mul_16x16_U
 					strstr
 						strlen
 						strncmp
 						strchr
 					EEPROM_Write
+					Lcd_Cmd
+						Delay_1us
+						Delay_5500us
+						Delay_50us
 					Lcd_Out
 						Lcd_Cmd
 							Delay_1us

@@ -12,18 +12,24 @@ delay_ms(10);
 
 
 
-void addCard(){
+char addCard(){
 cardExists=0;
+RFIDEnable=1;
 for(;;){
 if (UART1_Data_Ready() == 1&&cardExists==0){
-UART1_Read_Text(uart_rd,"\r", 16);
+for(i=0;i<12;i++){
+for(;!UART1_Data_Ready(););
+uart_rd[i]=UART1_Read();
+}
+RFIDEnable=0;
+if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
 for(i=0;i<16;i++){
 Exist1=strstr(uart_rd,id[i]);
-if(Exist1!=0)
-{
+if(Exist1!=0){
+Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,2,"Already Exists");
 cardExists=1;
-break;
+return 0;
 }
 }
 if(cardExists==0){
@@ -39,23 +45,34 @@ EEPROM_Write(Row+(i-1),uart_rd[i]);
 id[Row/16][i-1]=uart_rd[i];
 }
 Exist1=strstr(uart_rd,id[Row/16]);
-if(Exist1!=0)
-    {
-    Lcd_Cmd(_LCD_CLEAR);
-    Lcd_Out(1,3,"Card Added");
-    cardExists=1;
-    }
+if(Exist1!=0){
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,3,"Card Added");
+cardExists=1;
+return 0;
+}
+}
+}
+else{
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,5,"Failed");
+return 0;
+}
 }
 }
 }
 
-}
-
-void removeCard(){
+char removeCard(){
 cardExists=0;
+RFIDEnable=1;
 for(;;){
 if (UART1_Data_Ready() == 1&&cardExists==0){
-UART1_Read_Text(uart_rd,"\r", 16);
+for(i=0;i<12;i++){
+for(;!UART1_Data_Ready(););
+uart_rd[i]=UART1_Read();
+}
+RFIDEnable=0;
+if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
 for(i=0;i<16;i++){
 Exist1=strstr(uart_rd,id[i]);
 if(Exist1!=0)
@@ -65,18 +82,30 @@ id[i][j]=0x9F;
 EEPROM_Write((i*16)+j,0x9F);
 }
 cardExists=1;
+Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,3,"Card Removed");
-break;
+return 0;
+}
+}
+}
+else{
+Lcd_Cmd(_LCD_CLEAR);
+Lcd_Out(1,5,"Failed");
+return 0;
 }
 }
 }
 }
-}
-
 char CheckCard(){
+  RFIDEnable=1;
   if (UART1_Data_Ready() == 1)
     {
-    UART1_Read_Text(uart_rd,"\r", 16);
+    for(i=0;i<12;i++){
+    for(;!UART1_Data_Ready(););
+    uart_rd[i]=UART1_Read();
+    }
+    RFIDEnable=0;
+    if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
     for(i=0;i<16;i++){
     Exist=strstr(uart_rd,id[i]);
     if(Exist!=0){
@@ -87,7 +116,7 @@ char CheckCard(){
     notRegisteredCardAction();
     return 0;
     }
-
+   }
 }
 void registeredCardAction(){
     Lcd_Cmd(_LCD_CLEAR);

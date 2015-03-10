@@ -3,6 +3,8 @@
 
  void Initialization()
  {
+  TRISC0_bit=0;
+  RFIDEnable=1;
   GrapIDs();
   Keypad_Init();                           // Initialize Keypad
   Lcd_Init();                              // Initialize LCD
@@ -12,8 +14,9 @@
   UART1_Init(2400);
   Delay_ms(100);
    }
-  char checkPassword()
-  {
+   
+   
+char checkPassword(){
     for(;;){
     kp = 0;
     kp = Keypad_Key_Click();             // Store key code in kp variable
@@ -41,11 +44,12 @@
          Lcd_Out(1,2,"Pass Your ID");
          return 0;
          }
+      }
    }
-   }
-   }
+}
 
  void correctPassword(){
+ cnt=0;
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Correct Password");
  delay_ms(1000);
