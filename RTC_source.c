@@ -3,7 +3,12 @@
 
  void Initialization()
  {
-  TRISC0_bit=0;
+  ANSELA=0;
+  ANSELB=0;
+  ANSELC=0;
+  ANSELD=0;
+  TRISC0_Bit=0;
+  RC0_bit=1;
   RFIDEnable=1;
   GrapIDs();
   Keypad_Init();                           // Initialize Keypad
@@ -17,11 +22,11 @@
    
    
 char checkPassword(){
-    for(;;){
+   for(;;){
     kp = 0;
     kp = Keypad_Key_Click();             // Store key code in kp variable
     if(kp==0) return 0;
-    kp=Mask(kp);
+   kp=Mask(kp);
     Enter_ID[cnt]=kp;
     Lcd_Chr(2,cnt+1,kp);
     i++;
@@ -30,7 +35,7 @@ char checkPassword(){
        {
         Lcd_Chr(2,i+1,Enter_ID[cnt]);
         e=strstr(Enter_ID,pass_word);
-        if(e!=0)
+       if(e!=0)
         {
          correctPassword();
          delay_ms(1000);
@@ -70,6 +75,7 @@ char checkPassword(){
  }
 
  char readKeypad(){
+
     kp = 0;                                // Reset key code variable
     do
     kp = Keypad_Key_Click();             // Store key code in kp variable
@@ -187,20 +193,7 @@ void Display_Time()
 
 
 }
-char* Display_date()
-{    dday = read_ds1307(3);
-      day = read_ds1307(4);
-      month = read_ds1307(5);
-      year = read_ds1307(6);
 
-      date[0] = BCD2UpperCh(day);
-      date[1] = BCD2LowerCh(day);
-      date[3] = BCD2UpperCh(month);
-      date[4] = BCD2LowerCh(month);
-      date[6] = BCD2UpperCh(year);
-      date[7] = BCD2LowerCh(year);
-      return date;
-}
 //kp
 unsigned char Mask(char kp)
   {

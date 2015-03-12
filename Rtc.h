@@ -36,7 +36,7 @@ char date[] = "00-00-00";
 unsigned char Enter_ID[10]="", txt[17]="Correct Password";
 char pass_word[5]="1111";
 char i=0;
-char keypadPort at PORTD;
+unsigned char keypadPort at PORTD;
 unsigned char kp;
 short cnt=0, oldstate = 0;
 char e;

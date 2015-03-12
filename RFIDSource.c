@@ -119,8 +119,16 @@ char CheckCard(){
    }
 }
 void registeredCardAction(){
+    //Display_Time();
     Lcd_Cmd(_LCD_CLEAR);
     Lcd_Out(1,1,"Done");
+    Lcd_Out(2,1,time);
+    UART1_Write_Text(uart_rd);
+    UART1_Write(0x0D);
+    UART1_Write(0x0A);
+    UART1_Write_Text(time);
+    UART1_Write(0x0D);
+    UART1_Write(0x0A);
     delay_ms(1000);
     Lcd_Cmd(_LCD_CLEAR);
     Lcd_Out(1,1,"Pass Your ID");

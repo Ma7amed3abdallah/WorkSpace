@@ -24,6 +24,8 @@ main
 					Delay_50us
 		UART1_Init
 	I2C1_Init
+	UART1_Write_Text
+		UART1_Write
 	CheckCard
 		UART1_Data_Ready
 		UART1_Read
@@ -47,6 +49,9 @@ main
 						Delay_1us
 						Delay_5500us
 						Delay_50us
+			UART1_Write_Text
+				UART1_Write
+			UART1_Write
 		notRegisteredCardAction
 			Lcd_Cmd
 				Delay_1us

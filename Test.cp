@@ -39,7 +39,7 @@ char date[] = "00-00-00";
 unsigned char Enter_ID[10]="", txt[17]="Correct Password";
 char pass_word[5]="1111";
 char i=0;
-char keypadPort at PORTD;
+unsigned char keypadPort at PORTD;
 unsigned char kp;
 short cnt=0, oldstate = 0;
 char e;
@@ -188,8 +188,16 @@ char CheckCard(){
  }
 }
 void registeredCardAction(){
+
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Done");
+ Lcd_Out(2,1,time);
+ UART1_Write_Text(uart_rd);
+ UART1_Write(0x0D);
+ UART1_Write(0x0A);
+ UART1_Write_Text(time);
+ UART1_Write(0x0D);
+ UART1_Write(0x0A);
  delay_ms(1000);
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Pass Your ID");
@@ -205,7 +213,12 @@ void notRegisteredCardAction(){
 #line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc_source.c"
  void Initialization()
  {
- TRISC0_bit=0;
+ ANSELA=0;
+ ANSELB=0;
+ ANSELC=0;
+ ANSELD=0;
+ TRISC0_Bit=0;
+ RC0_bit=1;
  RFIDEnable=1;
  GrapIDs();
  Keypad_Init();
@@ -272,6 +285,7 @@ char checkPassword(){
  }
 
  char readKeypad(){
+
  kp = 0;
  do
  kp = Keypad_Key_Click();
@@ -389,20 +403,7 @@ void Display_Time()
 
 
 }
-char* Display_date()
-{ dday = read_ds1307(3);
- day = read_ds1307(4);
- month = read_ds1307(5);
- year = read_ds1307(6);
 
- date[0] = BCD2UpperCh(day);
- date[1] = BCD2LowerCh(day);
- date[3] = BCD2UpperCh(month);
- date[4] = BCD2LowerCh(month);
- date[6] = BCD2UpperCh(year);
- date[7] = BCD2LowerCh(year);
- return date;
-}
 
 unsigned char Mask(char kp)
  {
@@ -428,12 +429,11 @@ unsigned char Mask(char kp)
  }
 
  }
-#line 2 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
-int seee;
-
+#line 3 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
 void main() {
 Initialization();
 I2C1_Init(100000);
+UART1_Write_Text("Start");
 for(;;){
 CheckCard();
 checkPassword();
