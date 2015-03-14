@@ -84,6 +84,7 @@ EEPROM_Write((i*16)+j,0x9F);
 cardExists=1;
 Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,3,"Card Removed");
+
 return 0;
 }
 }
@@ -108,6 +109,10 @@ char CheckCard(){
     if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
     for(i=0;i<16;i++){
     Exist=strstr(uart_rd,id[i]);
+    if(Exist!=0&&i==0){
+    masterCardAction();
+    return 0;
+    }
     if(Exist!=0){
     registeredCardAction();
     return 0;
@@ -119,7 +124,7 @@ char CheckCard(){
    }
 }
 void registeredCardAction(){
-    //Display_Time();
+    Display_Time();
     Lcd_Cmd(_LCD_CLEAR);
     Lcd_Out(1,1,"Done");
     Lcd_Out(2,1,time);
@@ -140,4 +145,36 @@ void notRegisteredCardAction(){
     delay_ms(1000);
     Lcd_Cmd(_LCD_CLEAR);
     Lcd_Out(1,1,"Pass Your ID");
+}
+
+char masterCardAction(){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,3,"Master Card");
+ Lcd_Out(2,5,"Applied");
+ delay_ms(1000);
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Choose Option");
+ delay_ms(1000);
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"1 AddCard 3 Back");
+ Lcd_Out(2,1,"2 Remove Card");
+ for(;;){
+ if(RC0_bit==0){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Put The Card");
+ delay_ms(1000);
+ addCard();
+ return 0;
+ }
+ if(RC1_bit==0){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Put The Card");
+ delay_ms(1000);
+ removeCard();
+ return 0;
+ }
+ if(RC2_bit==0){
+ return 0;
+ }
+ }
 }

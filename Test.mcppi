@@ -6,7 +6,7 @@ Value=-1
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=rtc_source.c
+Value=rfidsource.c
 [USE_EEPROM]
 Value=1
 [USE_HEAP]
@@ -36,13 +36,14 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=6
+Count=7
 Path0=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
 Path1=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
-Path2=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\RFIDKEYLCD\WorkSpace\
-Path3=C:\GitWorkSpace\RFID\
-Path4=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\KeyPadLCDTest\
-Path5=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\NewRFID\
+Path2=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\RFIDKEYLCD\Test02\WorkSpace\
+Path3=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\RFIDKEYLCD\WorkSpace\
+Path4=C:\GitWorkSpace\RFID\
+Path5=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\KeyPadLCDTest\
+Path6=C:\Users\Mohamed\OneDrive\Documents\WorkSpace\NewRFID\
 [HEADER_PATH]
 Count=0
 [HEADERS]

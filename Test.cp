@@ -1,6 +1,6 @@
-#line 1 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc_source.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc.h"
+#line 1 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/Test02/WorkSpace/Test.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rtc_source.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rtc.h"
 
 
 sbit LCD_RS at RB4_bit;
@@ -58,18 +58,19 @@ char checkPassword();
 void correctPassword();
 void wrongPassword();
 char readKeypad();
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidsource.c"
-#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidheader.h"
-sbit RFIDEnable at RC0_bit;
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rfidsource.c"
+#line 1 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rfidheader.h"
+sbit RFIDEnable at RC5_bit;
 void Init();
 void GrapIDs();
 char addCard();
 char removeCard();
 void CheckCard();
+char masterCardAction();
 void registeredCardAction();
 void notRegisteredCardAction();
 unsigned char buffer,cardExists=0,Row=0,j,Exist,Exist1,Exist2,uart_rd[20],id[16][14]={"","","","","","","","","","","","","","","",""};
-#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rfidsource.c"
+#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rfidsource.c"
 void GrapIDs(){
 for(j=0;j<16;j++){
 for(i=0;i<10;i++){
@@ -153,6 +154,7 @@ EEPROM_Write((i*16)+j,0x9F);
 cardExists=1;
 Lcd_Cmd(_LCD_CLEAR);
 Lcd_Out(1,3,"Card Removed");
+
 return 0;
 }
 }
@@ -177,6 +179,10 @@ char CheckCard(){
  if(uart_rd[0]==0x0A&&uart_rd[11]==0x0D){
  for(i=0;i<16;i++){
  Exist=strstr(uart_rd,id[i]);
+ if(Exist!=0&&i==0){
+ masterCardAction();
+ return 0;
+ }
  if(Exist!=0){
  registeredCardAction();
  return 0;
@@ -188,7 +194,7 @@ char CheckCard(){
  }
 }
 void registeredCardAction(){
-
+ Display_Time();
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Done");
  Lcd_Out(2,1,time);
@@ -210,15 +216,50 @@ void notRegisteredCardAction(){
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Out(1,1,"Pass Your ID");
 }
-#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/workspace/rtc_source.c"
+
+char masterCardAction(){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,3,"Master Card");
+ Lcd_Out(2,5,"Applied");
+ delay_ms(1000);
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Choose Option");
+ delay_ms(1000);
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"1 AddCard 3 Back");
+ Lcd_Out(2,1,"2 Remove Card");
+ for(;;){
+ if(RC0_bit==0){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Put The Card");
+ delay_ms(1000);
+ addCard();
+ return 0;
+ }
+ if(RC1_bit==0){
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Out(1,1,"Put The Card");
+ delay_ms(1000);
+ removeCard();
+ return 0;
+ }
+ if(RC2_bit==0){
+ return 0;
+ }
+ }
+}
+#line 4 "c:/users/mohamed/onedrive/documents/workspace/rfidkeylcd/test02/workspace/rtc_source.c"
  void Initialization()
  {
  ANSELA=0;
  ANSELB=0;
  ANSELC=0;
  ANSELD=0;
- TRISC0_Bit=0;
- RC0_bit=1;
+ TRISC0_Bit=1;
+ TRISC1_Bit=1;
+ TRISC2_Bit=1;
+ TRISC5_Bit=0;
+ RC5_bit=1;
  RFIDEnable=1;
  GrapIDs();
  Keypad_Init();
@@ -429,13 +470,13 @@ unsigned char Mask(char kp)
  }
 
  }
-#line 3 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/WorkSpace/Test.c"
+#line 3 "C:/Users/Mohamed/OneDrive/Documents/WorkSpace/RFIDKEYLCD/Test02/WorkSpace/Test.c"
 void main() {
 Initialization();
 I2C1_Init(100000);
 UART1_Write_Text("Start");
 for(;;){
 CheckCard();
-checkPassword();
+
 }
 }

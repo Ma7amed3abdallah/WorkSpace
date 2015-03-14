@@ -7,8 +7,11 @@
   ANSELB=0;
   ANSELC=0;
   ANSELD=0;
-  TRISC0_Bit=0;
-  RC0_bit=1;
+  TRISC0_Bit=1;
+  TRISC1_Bit=1;
+  TRISC2_Bit=1;
+  TRISC5_Bit=0;
+  RC5_bit=1;
   RFIDEnable=1;
   GrapIDs();
   Keypad_Init();                           // Initialize Keypad
